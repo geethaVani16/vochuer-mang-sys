@@ -40,7 +40,7 @@ module.exports = (app, db) => {
       })
         .then((list) => {
           if (list === null) {
-            resolve("Email or Password is Incorrect")
+            reject("Email or Password is Incorrect")
           } else {
             resolve(list.dataValues)
           }
@@ -104,27 +104,8 @@ module.exports = (app, db) => {
   }
 
 
-  // GET all users
-  app.get('/users', (req, res) => {
-    db.users.findAll()
-      .then(users => {
-        res.json(users);
-      });
-  });
-
-  // GET one owner by id
-  app.get('/owner/:id', (req, res) => {
-    const id = req.params.id;
-    db.users.find({
-      where: { id: id }
-    })
-      .then(owner => {
-        res.json(owner);
-      });
-  });
-
   // POST single owner
-  app.post('/users/create', async (req, res) => {
+  app.post('/users/register', async (req, res) => {
     const email = req.body.email
     const doesUserExits = await UserExists(email)
     if (!doesUserExits) {
@@ -138,16 +119,21 @@ module.exports = (app, db) => {
   app.post('/users/login', async (req, res) => {
     const { email, password } = req.body
     const findUserCred = await findUserCREDExists(email, password)
-    if (findUserCred) {
-      console.log(findUserCred, "findUserCred")
-      const userTokenData = findUserCred.tokens
-      const genarateToken = await genarateJWT(req.body)
-      userTokenData.push(genarateToken)
-      const updateUserWithToken = await updateUserinDB(findUserCred.userid, findUserCred.tokens)
-      res.status(200).json(updateUserWithToken)
-    } else {
-      res.status(422).json("Already have an account please login")
+    try {
+      if (findUserCred) {
+        console.log(findUserCred, "findUserCred")
+        const userTokenData = findUserCred.tokens
+        const genarateToken = await genarateJWT(req.body)
+        userTokenData.push(genarateToken)
+        const updateUserWithToken = await updateUserinDB(findUserCred.userid, findUserCred.tokens)
+        res.status(200).json(updateUserWithToken)
+      } else {
+        res.status(422).json("Incorrect password")
+      }
+    } catch {
+      res.status(err).json(err)
     }
+
 
   })
 };

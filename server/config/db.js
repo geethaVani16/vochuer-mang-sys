@@ -20,10 +20,10 @@ db.sequelize = sequelize;
 
 //Models/tables
 db.users = require('../models/users.js')(sequelize, Sequelize);
-db.pets = require('../models/pets.js')(sequelize, Sequelize);
+db.vouchers = require('../models/voucherlist.js')(sequelize, Sequelize);
 
-//Relations
-db.pets.belongsTo(db.users);
-db.users.hasMany(db.pets);
+// //Relations
+// db.pets.belongsTo(db.users);
+// db.users.hasMany(db.pets);
 
 module.exports = db;

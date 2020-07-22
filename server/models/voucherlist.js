@@ -1,27 +1,31 @@
 'use strict'
 
 module.exports = (sequelize, DataTypes) => {
-  const User = sequelize.define('userlists', {
-    userid: {
+  const Voucher = sequelize.define('voucherlists', {
+    id: {
       type: DataTypes.UUID,
       primaryKey: true,
       defaultValue: DataTypes.UUIDV4
     },
-    username: {
+    voucher_name: {
       type: DataTypes.STRING,
       required: true
     },
-    email: {
-      type: DataTypes.TEXT,
-      required: true
+    assigned_email: {
+      type: DataTypes.STRING
     },
-    password: {
-      type: DataTypes.STRING,
-      required: true
+    voucher_pin: {
+      type: DataTypes.STRING
     },
-    tokens: {
-      type: DataTypes.JSONB,
-      defaultValue: []
+    limit:{
+      type: DataTypes.INTEGER,
+      defaultValue:5
+    },
+    voucher_applied_time:{
+      type: DataTypes.TEXT
+    },
+    status:{
+      type: DataTypes.STRING
     },
     created_at: {
       type: DataTypes.DATE,
@@ -32,5 +36,5 @@ module.exports = (sequelize, DataTypes) => {
     // paranoid: true,
     // underscored: true
   });
-  return User;
+  return Voucher;
 };
